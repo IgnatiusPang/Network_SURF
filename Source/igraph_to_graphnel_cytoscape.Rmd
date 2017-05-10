@@ -1,0 +1,54 @@
+---
+title: "igraph_to_graphnel_cytoscape.Rmd"
+author: "Ignatius Pang"
+date: "10 May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Convert igraph object to graphNEL object and then display in Cytoscape
+
+
+```{r }
+
+### Converting igraph to graphNEL does not work, probably need to e-mail igraph author, RCy3 author to find out why
+library(igraph)
+library(RCy3)
+
+# Make a ring graph with 10 nodes and 10 edges
+g3 <- make_ring(10)
+
+# Assign names to the nodes
+V(g3)$name <- letters[1:10]
+
+# Convert the igraph object to a GraphNEL object
+GNEL2 <- as_graphnel(g3)
+
+plot(GNEL2)
+
+ GNEL2 <- initEdgeAttribute (graph=GNEL2, attribute.name='weight', attribute.type='numeric', default.value=0)
+
+ str(GNEL2)
+
+# Move it into a Cytoscape Window
+cw <- CytoscapeWindow ( 'Ring Graph', graph=GNEL2, overwrite=TRUE)
+
+cw <- setGraph (cw, GNEL2)
+
+#cw <- RCy3::setGraph(cw, GNEL2)  # encountered problem at this step 
+
+
+RCy3::displayGraph(cw)
+
+RCy3::layoutNetwork(cw, layout.name = "force-directed")
+
+
+
+sessionInfo()
+
+
+
+```

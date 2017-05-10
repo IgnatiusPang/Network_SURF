@@ -1,0 +1,191 @@
+---
+title: "Draw a single triplet"
+author: "Ignatius Pang"
+date: "9 May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(RCy3)
+
+```
+
+
+## Reference
+I've used the Bioconductor RCy3 vignette extensively for this demo: https://bioconductor.org/packages/release/bioc/vignettes/RCy3/inst/doc/RCy3.R
+
+## Add the nodes
+```{r }
+g <- new('graphNEL', edgemode='undirected')
+
+g <- graph::addNode( 'A', g)
+g <- graph::addNode( 'B', g)
+g <- graph::addNode( 'C', g)
+
+# Create a Cytoscape Window
+cw <- CytoscapeWindow('One Triplet', graph=g, overwrite=TRUE)
+
+# Push the network into to Cytoscape 
+displayGraph(cw)
+
+# Use layout algorithm to draw the graph
+layoutNetwork(cw, layout.name = "force-directed")
+
+```
+
+## Add node attributes
+```{r }
+
+g <- cw@graph   # created above, in the section  'A minimal example'
+
+g <- initNodeAttribute (graph=g,  attribute.name='Gene_Symbol',
+                            attribute.type='char',
+                            default.value='undefined')
+
+g <- initNodeAttribute (graph=g,  attribute.name='moleculeType',
+                            attribute.type='char',
+                            default.value='undefined')
+
+g <- initNodeAttribute (graph=g,  'log_fold_change', 'numeric', 0.0)
+
+#  oln_id_a | oln_id_b | oln_id_c | type_ac | type_bc |  score   
+# ----------+----------+----------+---------+---------+---------
+#  YKL101W  | YDL056W  | YDR507C  | kd      | td      | -0.3311
+
+
+# Add the gene name 
+nodeData (g, 'A', 'Gene_Symbol') <- 'HSL1' # YKL101W
+nodeData (g, 'B', 'Gene_Symbol') <- 'MBP1' # YDL056W
+nodeData (g, 'C', 'Gene_Symbol') <- 'GIN4' # YDR507C
+
+# Add molecule type
+nodeData (g, 'A', 'moleculeType') <- 'kinase'
+nodeData (g, 'B', 'moleculeType') <- 'TF'
+nodeData (g, 'C', 'moleculeType') <- 'protein'
+
+# Add fold change
+nodeData (g, 'A', 'log_fold_change') <- -1.4
+nodeData (g, 'B', 'log_fold_change') <- 1.9
+nodeData (g, 'C', 'log_fold_change') <- 3.7
+
+# Send to Cytoscape
+cw <- setGraph (cw, g)
+displayGraph (cw)    # cw's graph is sent to Cytoscape
+
+layoutNetwork(cw, layout.name = "force-directed")
+
+```
+
+# Modifying Node Display Style
+```{r}
+
+
+# Set defaults
+    setDefaultNodeShape (cw, 'ELLIPSE')
+    setDefaultNodeColor (cw, '#AAFF88')
+    setDefaultNodeSize  (cw, 80)
+    setDefaultNodeFontSize (cw, 40)
+
+# Change shape of node
+    getNodeShapes (cw)   # diamond, ellipse, trapezoid, triangle, etc.
+    print (noa.names (getGraph (cw)))  # what data attributes are defined?
+    print (noa (getGraph (cw), 'moleculeType')) # Print the node attributes for each node
+    attribute.values <- c ('kinase',  'TF',       'protein')
+    node.shapes      <- c ('DIAMOND', 'TRIANGLE', 'CIRCLE')
+    setNodeShapeRule (cw, node.attribute.name='moleculeType',
+                      attribute.values, node.shapes)
+
+    
+# Change the colour of the node according to the log fold-change in transcript abundances
+    setNodeColorRule (cw, 'log_fold_change', c (-3.0, 0.0, 3.0),
+                      c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000'),
+                      mode='interpolate')
+    
+# You can also change the size of the node based on the log fold-change value    
+    # control.points = c (-1.2, 2.0, 4.0)
+    # node.sizes     = c (10, 20, 50, 200, 205)
+    # setNodeSizeRule (cw, 'log_fold_change', control.points, node.sizes,
+    #                  mode='interpolate')
+
+```
+
+
+## Add edges and edge attributes
+```{r}
+
+
+    g <- cw@graph
+    g <- initEdgeAttribute (graph=g,  attribute.name='edgeType',
+                            attribute.type='char',
+                            default.value='unspecified')
+    
+    # Add edges
+    g <- graph::addEdge ('A', 'B', g)
+    g <- graph::addEdge ('B', 'C', g)
+    g <- graph::addEdge ('A', 'C', g)
+
+    # Assign edge attributes
+    edgeData (g, 'A', 'B', 'edgeType') <- 'negative genetic interaction'
+    edgeData (g, 'B', 'C', 'edgeType') <- 'activates transcription of target gene'
+    edgeData (g, 'A', 'C', 'edgeType') <- 'activates via phosphorylation'
+    
+    
+    cw@graph <- g
+    displayGraph (cw)
+
+    # 
+    getLineStyles(cw)
+    
+    line.styles <- c ( 'SOLID', 'DOT',  'PARALLEL_LINES')
+    edgeType.values <- c ('activates via phosphorylation', 'activates transcription of target gene',
+                         'negative genetic interaction')
+    
+    setEdgeLineStyleRule (cw, 'edgeType', edgeType.values,
+                          line.styles)
+
+    getArrowShapes(cw)
+    
+    #setDefaultEdgeSourceArrowRule(cw,'NONE')
+    
+    ## Source Arrow Styles
+    source.arrow.styles <- c ('None', 'None', 'None') # c ('NONE', 'NONE', 'NONE')
+
+    setEdgeSourceArrowRule (cw, 'edgeType', 
+    						attribute.values=edgeType.values,
+                            arrows=source.arrow.styles, 
+    						default="NONE")
+    
+    ## Target Arrow Styles
+    target.arrow.styles <- c ('ARROW', 'DELTA', 'NONE')
+    setEdgeTargetArrowRule (cw, 'edgeType', 
+    						edgeType.values,
+                            target.arrow.styles, 
+    						default="NONE")
+
+    cw@graph <- g
+    displayGraph (cw)
+   
+    layoutNetwork(cw, layout.name = "force-directed")
+    
+```
+
+## Delete an edge
+```{r}
+selectEdges (cw, "A (negative genetic interaction) B")
+deleteSelectedEdges (cw)
+
+```
+
+## Get the selected node
+```{r}
+getSelectedNodes(cw)
+```
+
+
+## Get the selected Node and find the first neighbour, then delete it 
+```{r}
+selectFirstNeighborsOfSelectedNodes(cw)
+
+deleteSelectedNodes (cw)
+```

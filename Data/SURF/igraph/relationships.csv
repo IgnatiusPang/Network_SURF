@@ -1,0 +1,15 @@
+Person_A,Person_B,Social_Group,Number_of_emails
+Alice,Bob,Basketball,10
+Bob,Cindy,Basketball,10
+Alice,Cindy,Basketball,10
+Alice,David,Client,3
+James,David,Client,5
+David,Emily,Client,4
+David,Helen,Client,6
+Helen,Iris,Fencing,3
+James,Emily,Tennis,5
+James,Gabby,Tennis,7
+James,Frank,Tennis,4
+Emily,Gabby,Tennis,1
+Emily,Frank,Tennis,10
+Gabby,Frank,Tennis,8

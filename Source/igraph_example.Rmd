@@ -1,0 +1,330 @@
+---
+title: "igraph example"
+author: Ignatius Pang
+output: 
+	html_document: 
+		toc: TRUE
+---
+
+Install and Load Igraph
+```{r}
+# Install the igraph library
+# install.packages('igraph')
+
+# load the igraph library
+library(igraph)
+library(RCy3)
+```
+
+Configure directories 
+```{r}
+# Configure the base directory 
+base_directory <- "/home/ignatius/Documents/Postdoc/2016/Triplet_Motifs"
+
+# Configure the data directory
+data_directory <- file.path( base_directory, "Data/SURF/igraph" ) 
+
+# Configure the results directory
+results_directory <- file.path( base_directory, "Results/SURF/igraph" ) 
+
+# Create the results directory if it does not yet exists
+if(      ! dir.exists(results_directory) ) {
+		dir.create(results_directory, recursive = TRUE)
+}
+```
+
+Read the input files with the node and edge information 
+```{r}
+# Read the Nodes data
+people <- read.csv( file.path( data_directory, "people.csv"), head=TRUE)
+
+# Read the Edges data
+relationships <- read.csv(file.path(data_directory, "relationships.csv") , head=TRUE)
+
+# check what the tables look like
+
+head(people)
+head(relationships)
+```
+
+
+```{r}
+#### Create an empty graph object
+g <- graph.empty(directed=FALSE)
+
+### Add vertices
+g <- add.vertices(g, nrow(people),
+                     name=as.character(people[,1]), age=people[,2],
+                     gender=as.character(people[,3]))
+
+
+
+### Add edges
+  edges <- t(relationships[,c('Person_A', 'Person_B')])
+
+
+ g <- add.edges(g, edges,
+               social.group=as.character(relationships[,3]),
+	       num.emails=as.character(relationships[,4]))
+
+
+ # View nodes and edges data
+ print ( "Look at the node properties")
+ print ("Get the List of Names")
+ V(g)$name
+ 
+ print ( "Get the gender of the people")
+ V(g)$gender
+ 
+ print ( "Get the age of the people")
+ V(g)$age
+ 
+ # Look at Edge Properties 
+ print ( "Look at the Edge Properties")
+ print ( "Get the relationship between two people")
+ E(g)$social.group
+ 
+ print ( "Get the number of e-mails sent between two people ")
+ E(g)$num.emails
+ 
+ # Plot the graph (draft)
+ plot(g)
+```
+
+```{r}
+# Add a node and an edge 
+
+g <- g + vertex("Kylie", gender="F", age=23) +
+	     edge("David", "Kylie", num.emails=2, social.group="Client")
+	
+plot(g)
+
+
+```
+
+```{r}
+# Remove an edge: Helen--Iris
+
+ g_temp <- g
+
+ g <- g -edge("Helen|Iris")
+
+ plot(g)
+
+# Other ways of removing an edge 
+ g_1 <- g_temp - path ( "Helen", "Iris") 
+
+ g_2 <- g_temp %>% delete_edges("Helen|Iris")  
+
+ g_3 <- g_temp -edge("Iris|Helen")
+ 
+ 
+ # Remove the node named Iris 
+ 
+ g <- g - vertex('Iris')
+	
+plot(g)
+
+
+```
+
+
+We want to format the graph based on the node properties 
+```{r}
+# Colour nodes by gender
+V(g)$color <- ifelse(V(g)$gender == 'M', "cyan", "pink")
+
+# Node size represents age
+V(g)$size <- V(g)$age
+
+# Plot the graph (draft)
+plot(g)
+```
+
+We want to format the graph based on the edge properties 
+```{r}
+# Edge thickness represents number of e-mails
+E(g)$width <- E(g)$num.emails
+
+# Edge colour represents social group
+edge_color_lookup <- list( tennis ="orange", basketball="blue", client="black", fencing="brown" )
+E(g)$color <- unlist(lapply(E(g)$social.group, function(x){ edge_color_lookup[[tolower(x)]] } ))
+
+plot(g)
+```
+
+
+
+Some network statistics 
+```{r}
+# Calculate the degree and betweenness scores of nodes in the network
+
+# Number of friends for each person
+degree(g)
+
+# Centrality measure of each person. Betweeness is the number of shortest path that pass throught this node. It seems that David is central to this social network. 
+betweenness(g)
+```
+
+Save the results in output directories
+```{r}
+# Save the graph visualization in a PDF file
+pdf(paste(results_directory, "example.pdf", sep="") )
+dev.off()
+
+## This file can be opened in Cytoscape
+#http://opentutorials.cgl.ucsf.edu/index.php/Portal:Cytoscape3
+write.graph(g, paste(results_directory, "example.graphml", sep="") , format= "graphml")
+
+# Get the adjacency matrix 
+adjacency_matrix <- get.adjacency(g) %>% as.matrix()
+adjacency_matrix
+
+# Get the edge list
+edge_list <- get.edgelist(g)
+edge_list
+
+```
+
+
+# Based on the as_graphnel object from igraph package.
+# Edited such that it deals with class attribute 
+```{r}
+my_as_graphnel <- function (graph) 
+{
+    if (!is_igraph(graph)) {
+        stop("Not an igraph graph")
+    }
+    if ("name" %in% vertex_attr_names(graph) && is.character(V(graph)$name)) {
+        name <- V(graph)$name
+    }
+    else {
+        name <- as.character(seq(vcount(graph)))
+    }
+    edgemode <- if (is_directed(graph)) 
+        "directed"
+    else "undirected"
+    if ("weight" %in% edge_attr_names(graph) && is.numeric(E(graph)$weight)) {
+        al <- lapply(as_adj_edge_list(graph, "out"), as.vector)
+        for (i in seq(along = al)) {
+            edges <- ends(graph, al[[i]], names = FALSE)
+            edges <- ifelse(edges[, 2] == i, edges[, 1], edges[, 
+                2])
+            weights <- E(graph)$weight[al[[i]]]
+            al[[i]] <- list(edges = edges, weights = weights)
+        }
+    }
+    else {
+        al <- as_adj_list(graph, "out")
+        al <- lapply(al, function(x) list(edges = as.vector(x)))
+    }
+    names(al) <- name
+    res <- new("graphNEL", nodes = name, edgeL = al, edgemode = edgemode)
+    g.n <- graph_attr_names(graph)
+    if ("directed" %in% g.n) {
+        warning("Cannot add graph attribute `directed'")
+        g.n <- g.n[g.n != "directed"]
+    }
+    for (n in g.n) {
+        res@graphData[[n]] <- graph_attr(graph, n)
+    }
+    v.n <- vertex_attr_names(graph)
+    v.n <- v.n[v.n != "name"]
+    for (n in v.n) {
+
+    	 graph::nodeDataDefaults(res, attr = n) <- NA
+		attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'char'
+
+        test_node_data_type <- vertex_attr(graph, n)[1]
+        
+        	        
+			        if ( is.numeric(test_node_data_type)) {
+			        	graph::nodeDataDefaults(res, attr = n) <- 0
+			        	attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'numeric'
+
+			        } else if (is.integer(test_node_data_type)) {
+			        	graph::nodeDataDefaults(res, attr = n) <- 0 
+			        	attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'integer'
+
+			        } else if ( is.character(test_node_data_type)) {
+			        	graph::nodeDataDefaults(res, attr = n) <- ''
+			        	attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'char'
+					}
+
+        print ( vertex_attr(graph, n))
+        
+        graph::nodeData(res, attr = n) <- vertex_attr(graph, n)
+    }
+    e.n <- edge_attr_names(graph)
+    e.n <- e.n[e.n != "weight"]
+    if (length(e.n) > 0) {
+        el <- as_edgelist(graph)
+        el <- paste(sep = "|", el[, 1], el[, 2])
+        
+        # Initialize edge weight attribute anyway as it is always used in cytoscape
+         graph::edgeDataDefaults(res, attr="weight") <- 0
+         attr(graph::edgeDataDefaults(res, attr="weight"), 'class') <- 'numeric'
+        
+        for (n in e.n) {
+
+        	   graph::edgeDataDefaults(res, attr = n) <- NA
+        		attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'char'
+
+        	   test_edge_data_type <- edge_attr(graph, n)[1]
+
+        	        
+				        if ( is.numeric(test_edge_data_type)) {
+				        	graph::edgeDataDefaults(res, attr = n) <- 0
+				        	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'numeric'
+				        } else if (is.integer(test_edge_data_type)) {
+
+ 					        graph::dgeDataDefaults(res, attr = n) <- 0
+				        	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'integer'
+ 					        
+
+				        } else if ( is.character(test_edge_data_type)) {
+				        	graph::edgeDataDefaults(res, attr = n) <- ''
+				        	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'char'
+				        	
+				        }
+        
+        		
+			print ( edge_attr(graph, n))
+			
+            res@edgeData@data[el] <- mapply(function(x, y) {
+                xx <- c(x, y)
+                names(xx)[length(xx)] <- n
+                xx
+            }, res@edgeData@data[el], edge_attr(graph, n), SIMPLIFY = FALSE)
+        }
+    }
+    res
+}
+```
+
+```{r}
+
+GNEL2 <-my_as_graphnel(g)
+
+# Convert graphNEL object back to igraph object and I can see all attributes are still preserved
+g4 <- graph_from_graphnel(GNEL2)
+plot(g4)
+
+#nodeData(GNEL2)
+#str(GNEL2)
+
+# Move it into a Cytoscape Window
+new_empth_graph <- new('graphNEL', edgemode='undirected')
+
+cw <- CytoscapeWindow ( 'Mini Social Network', graph=new_empth_graph, overwrite=TRUE)
+cw <- setGraph (cw, GNEL2)
+cw@graph <- GNEL2
+RCy3::displayGraph(cw)
+
+RCy3::layoutNetwork(cw, layout.name = "force-directed")
+
+
+```
+
+
+
