@@ -17,8 +17,10 @@ library(igraph)
 Configure directories 
 ```{r}
 # Configure the base directory 
-base_directory <- "/home/ignatius/Documents/Postdoc/2016/Triplet_Motifs"
+setwd("/home/ignatius/PostDoc/2017/Network_SURF")
 
+base_directory <- getwd()
+ 
 # Configure the data directory
 data_directory <- file.path( base_directory, "Data/SURF/igraph" ) 
 

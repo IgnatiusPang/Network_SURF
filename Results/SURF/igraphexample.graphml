@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns
+         http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+<!-- Created by igraph -->
+  <key id="v_name" for="node" attr.name="name" attr.type="string"/>
+  <key id="v_age" for="node" attr.name="age" attr.type="double"/>
+  <key id="v_gender" for="node" attr.name="gender" attr.type="string"/>
+  <key id="v_color" for="node" attr.name="color" attr.type="string"/>
+  <key id="v_size" for="node" attr.name="size" attr.type="double"/>
+  <key id="e_social.group" for="edge" attr.name="social.group" attr.type="string"/>
+  <key id="e_num.emails" for="edge" attr.name="num.emails" attr.type="string"/>
+  <key id="e_width" for="edge" attr.name="width" attr.type="string"/>
+  <key id="e_color" for="edge" attr.name="color" attr.type="string"/>
+  <graph id="G" edgedefault="undirected">
+    <node id="n0">
+      <data key="v_name">Alice</data>
+      <data key="v_age">30</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">30</data>
+    </node>
+    <node id="n1">
+      <data key="v_name">Bob</data>
+      <data key="v_age">33</data>
+      <data key="v_gender">M</data>
+      <data key="v_color">cyan</data>
+      <data key="v_size">33</data>
+    </node>
+    <node id="n2">
+      <data key="v_name">Cindy</data>
+      <data key="v_age">35</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">35</data>
+    </node>
+    <node id="n3">
+      <data key="v_name">David</data>
+      <data key="v_age">28</data>
+      <data key="v_gender">M</data>
+      <data key="v_color">cyan</data>
+      <data key="v_size">28</data>
+    </node>
+    <node id="n4">
+      <data key="v_name">Emily</data>
+      <data key="v_age">25</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">25</data>
+    </node>
+    <node id="n5">
+      <data key="v_name">Frank</data>
+      <data key="v_age">31</data>
+      <data key="v_gender">M</data>
+      <data key="v_color">cyan</data>
+      <data key="v_size">31</data>
+    </node>
+    <node id="n6">
+      <data key="v_name">Gabby</data>
+      <data key="v_age">23</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">23</data>
+    </node>
+    <node id="n7">
+      <data key="v_name">Helen</data>
+      <data key="v_age">20</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">20</data>
+    </node>
+    <node id="n8">
+      <data key="v_name">James</data>
+      <data key="v_age">34</data>
+      <data key="v_gender">M</data>
+      <data key="v_color">cyan</data>
+      <data key="v_size">34</data>
+    </node>
+    <node id="n9">
+      <data key="v_name">Kylie</data>
+      <data key="v_age">23</data>
+      <data key="v_gender">F</data>
+      <data key="v_color">pink</data>
+      <data key="v_size">23</data>
+    </node>
+    <edge source="n0" target="n1">
+      <data key="e_social.group">Basketball</data>
+      <data key="e_num.emails">10</data>
+      <data key="e_width">10</data>
+      <data key="e_color">blue</data>
+    </edge>
+    <edge source="n1" target="n2">
+      <data key="e_social.group">Basketball</data>
+      <data key="e_num.emails">10</data>
+      <data key="e_width">10</data>
+      <data key="e_color">blue</data>
+    </edge>
+    <edge source="n0" target="n2">
+      <data key="e_social.group">Basketball</data>
+      <data key="e_num.emails">10</data>
+      <data key="e_width">10</data>
+      <data key="e_color">blue</data>
+    </edge>
+    <edge source="n0" target="n3">
+      <data key="e_social.group">Client</data>
+      <data key="e_num.emails">3</data>
+      <data key="e_width">3</data>
+      <data key="e_color">black</data>
+    </edge>
+    <edge source="n3" target="n8">
+      <data key="e_social.group">Client</data>
+      <data key="e_num.emails">5</data>
+      <data key="e_width">5</data>
+      <data key="e_color">black</data>
+    </edge>
+    <edge source="n3" target="n4">
+      <data key="e_social.group">Client</data>
+      <data key="e_num.emails">4</data>
+      <data key="e_width">4</data>
+      <data key="e_color">black</data>
+    </edge>
+    <edge source="n3" target="n7">
+      <data key="e_social.group">Client</data>
+      <data key="e_num.emails">6</data>
+      <data key="e_width">6</data>
+      <data key="e_color">black</data>
+    </edge>
+    <edge source="n4" target="n8">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">5</data>
+      <data key="e_width">5</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n6" target="n8">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">7</data>
+      <data key="e_width">7</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n5" target="n8">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">4</data>
+      <data key="e_width">4</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n4" target="n6">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">1</data>
+      <data key="e_width">1</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n4" target="n5">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">10</data>
+      <data key="e_width">10</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n5" target="n6">
+      <data key="e_social.group">Tennis</data>
+      <data key="e_num.emails">8</data>
+      <data key="e_width">8</data>
+      <data key="e_color">orange</data>
+    </edge>
+    <edge source="n3" target="n9">
+      <data key="e_social.group">Client</data>
+      <data key="e_num.emails">2</data>
+      <data key="e_width">2</data>
+      <data key="e_color">black</data>
+    </edge>
+  </graph>
+</graphml>

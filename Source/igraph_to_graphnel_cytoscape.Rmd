@@ -14,9 +14,15 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r }
 
+## try http:// if https:// URLs are not supported
+## Install Rgraphviz
+# source("https://bioconductor.org/biocLite.R")
+# biocLite("Rgraphviz")
+
 ### Converting igraph to graphNEL does not work, probably need to e-mail igraph author, RCy3 author to find out why
 library(igraph)
 library(RCy3)
+library(Rgraphviz)
 
 # Make a ring graph with 10 nodes and 10 edges
 g3 <- make_ring(10)
@@ -36,19 +42,12 @@ plot(GNEL2)
 # Move it into a Cytoscape Window
 cw <- CytoscapeWindow ( 'Ring Graph', graph=GNEL2, overwrite=TRUE)
 
-cw <- setGraph (cw, GNEL2)
-
-#cw <- RCy3::setGraph(cw, GNEL2)  # encountered problem at this step 
-
+cw <- RCy3::setGraph (cw, GNEL2)
 
 RCy3::displayGraph(cw)
 
 RCy3::layoutNetwork(cw, layout.name = "force-directed")
 
-
-
 sessionInfo()
-
-
 
 ```

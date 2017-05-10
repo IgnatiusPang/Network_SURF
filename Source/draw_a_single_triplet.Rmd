@@ -133,7 +133,10 @@ layoutNetwork(cw, layout.name = "force-directed")
     
     cw@graph <- g
     displayGraph (cw)
+```
 
+## Set the Style of the lines
+```{r}
     # 
     getLineStyles(cw)
     
@@ -145,8 +148,6 @@ layoutNetwork(cw, layout.name = "force-directed")
                           line.styles)
 
     getArrowShapes(cw)
-    
-    #setDefaultEdgeSourceArrowRule(cw,'NONE')
     
     ## Source Arrow Styles
     source.arrow.styles <- c ('None', 'None', 'None') # c ('NONE', 'NONE', 'NONE')
@@ -176,6 +177,8 @@ layoutNetwork(cw, layout.name = "force-directed")
 ```{r}
 
     cwe <- cw
+
+    ## You can build a simple graph but I've commented it out heres
     #cwe <- CytoscapeWindow ('vignette.setNodePosition',
     #                        graph=RCy3::makeSimpleGraph (), overwrite=TRUE)
     #displayGraph (cwe)
@@ -198,7 +201,7 @@ layoutNetwork(cw, layout.name = "force-directed")
 ```
 
 
-### code chunk number 16: moviePrep (eval = FALSE)
+###  moviePrep (eval = FALSE)
 ```{r}
     cwm <- cw
 
@@ -213,6 +216,7 @@ layoutNetwork(cw, layout.name = "force-directed")
 
 ### movieRules: Rules for changing the color and node size
 ```{r}
+    cwm <- cw
 
     lfc.control.points <- c (-3.0, 0.0, 3.0)
     lfc.colors <- c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000')

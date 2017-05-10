@@ -13,7 +13,10 @@ library(tibble)
 library(dplyr)
 library(ggplot2)
 
- base_directory <- "/home/ignatius/Documents/Postdoc/2017/Network_SURF"
+setwd("/home/ignatius/PostDoc/2017/Network_SURF")
+
+base_directory <- getwd()
+
 # base_directory <- "/home/ignatius/PostDoc/2017/Network_SURF"
 
 data_directory <- file.path( base_directory, "Data/R_Data") 
@@ -61,7 +64,7 @@ number_of_edges <- ecount( g)
 ```
 
 
-
+# Function to get the node degree distribution and format it into a table format
 ```{r }
 
 format_degree_distribution_as_table <- function( igraph_object, label) {
@@ -80,7 +83,9 @@ format_degree_distribution_as_table <- function( igraph_object, label) {
 	
 	return(result_table)
 }
+```
 
+```{r }
 
 ## Obtain a protein-protein interactions network 
 
@@ -91,14 +96,26 @@ graph_1 <- graph.data.frame(sbi_interactome_collated[, c("oln_id_a", "oln_id_b")
 
 # Tabulate and graph the node degrees of the original network
 graph_1_table <- format_degree_distribution_as_table(graph_1, "Original Network")
-  
+
+graph_1_table
+```
+
+```{r }  
 # Rewire the network using degree-preserving randomization  
 # Plot the degree distribution of the network afterwards
+
+# loops = FALSE to prevent destroying self loops (otherwise this could skew the results)
 graph_2 <- graph_1  %>%
 			rewire(keeping_degseq(loops = FALSE, niter = number_of_edges))
    
 graph_2_table <- format_degree_distribution_as_table(graph_2, "Rewired, keeping degree distribution")
 
+
+graph_2_table
+```
+
+
+```{r }
 # Rewire the network without keeping the degree distribution the same
 # Plot the degree distribution of the network afterwards
 graph_3 <- graph_1  %>%
@@ -106,14 +123,18 @@ graph_3 <- graph_1  %>%
    
 graph_3_table <- format_degree_distribution_as_table(graph_3, "Random rewiring")
 
-  
+graph_3_table
+```
+
+
+```{r }  
 merged_table <- rbind( graph_1_table, graph_2_table, graph_3_table)
 
 ggplot( merged_table, aes( degrees, frequency)) +
 	geom_point() +
 	facet_grid ( . ~ label) + 
-    scale_x_continuous(trans='log2') + 
-    scale_y_continuous(trans='log2') 
+    scale_x_continuous(trans='log2') +    # X-axis is in log scale
+    scale_y_continuous(trans='log2')      # Y-axis is in log scale
  
 ```
 
