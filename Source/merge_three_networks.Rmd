@@ -1,0 +1,17 @@
+---
+title: "Merge three networks together"
+author: "Ignatius Pang"
+date: "10 May 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Draw three networks and merge them together using cytoscape
+
+```{r cars}
+summary(cars)
+```
+

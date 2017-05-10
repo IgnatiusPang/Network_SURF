@@ -9,15 +9,14 @@ library(dplyr)
 #######################################################################################################################
 
 # cd '/media/z3371724/PostDoc/2016/Triplet_Motifs/Source/Poster/'
-setwd ( '/media/z3371724/PostDoc/2016/Triplet_Motifs/Source/Poster/')
+setwd ( '/home/ignatius/Documents/Postdoc/2017/Network_SURF')
 
-data_directory <- "/media/z3371724/PostDoc/2016/Triplet_Motifs/Data/Triplet_Motifs_R_data/"
+data_directory <- file.path(getwd(), "Data/R_Data/" ) 
 
 options <- commandArgs(trailingOnly = TRUE)
 
-source( '/media/z3371724/PostDoc/2016/Triplet_Motifs/Source/Common/parameters_file.R' ) 
 
-source( paste ( source_directory_common, 'draw_triplet_motif_network_helper.R', sep="") ) 
+source( file.path (getwd(), 'Source', 'draw_triplet_motif_network_helper.R' ) )
 
 #######################################################################################################################
 # Read through the list of all triplet motifs 

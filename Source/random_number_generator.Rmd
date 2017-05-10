@@ -47,20 +47,6 @@ is_two_lists_of_vectors_the_same <- function ( list_1, list_2) {
 }
 
 
-## Randomly sample 3 numbers from 1 to 100 
-sample_3_numbers <- function( random_seed , set_random_nubmer_seed =TRUE) { 
-	
-	if ( set_random_nubmer_seed == TRUE) {
-		
-					set.seed(random_seed)
-
-	}
-
-
-	return( sample ( 1:100, 3) ) 
-	
-} 
-
 ```
 
 
@@ -70,45 +56,64 @@ sample_3_numbers <- function( random_seed , set_random_nubmer_seed =TRUE) {
 
 random_number_seed <-10052017
 number_of_cpu_cores <- 3
-assign_random_number_each_time <- FALSE
+assign_random_number_each_time <- TRUE  # Change this 
 
+
+## Randomly sample 1 number from 1 to 100 
+sample_1_number <- function( random_seed , set_random_nubmer_seed =TRUE) { 
+	
+	if ( set_random_nubmer_seed == TRUE) {
+		
+					set.seed(random_seed)
+
+	}
+
+	return( sample ( 1:100, 1) ) 
+	
+} 
 
 set.seed(random_number_seed )
 
-my_sample_3_numbers <- partial ( sample_3_numbers, set_random_nubmer_seed= assign_random_number_each_time)
+my_sample_1_number <- partial ( sample_1_number, set_random_nubmer_seed= assign_random_number_each_time)
 
 # Get the two lists of random numbers vectors
-random_num_list_1 <- mclapply(1:3 , FUN=my_sample_3_numbers ,  mc.cores = number_of_cpu_cores) 
-random_num_list_2 <- mclapply(4:6 , FUN=my_sample_3_numbers ,  mc.cores = number_of_cpu_cores) 
+random_num_list_1 <- mclapply(1:3 , FUN=my_sample_1_number ,  mc.cores = number_of_cpu_cores) 
+random_num_list_2 <- mclapply(4:6 , FUN=my_sample_1_number ,  mc.cores = number_of_cpu_cores) 
 
-print ( "List 1: ")
-print( random_num_list_1 )
+random_num_list_1 <- paste( unlist( random_num_list_1 ), collapse=", ")
+random_num_list_2 <- paste( unlist ( random_num_list_2), collapse=", ")
 
-print ( "List 2:")
-print( random_num_list_2)
+print ( "Different runs with different random number seeds should give differen results")
 
-# Compare if the two lists of random numbers vectors are the same
-is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)
+print ( paste ("List 1: ", random_num_list_1 ) )
 
+print ( paste( "List 2:",  random_num_list_2 )  ) 
+
+# # Compare if the two lists of random numbers vectors are the same
+# print ( "Is list 1 reproducing the results of list 2?")
+# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)
 
  
 # Get the two lists of random numbers vectors
-random_num_list_3 <- mclapply(1:3 , FUN=my_sample_3_numbers ,  mc.cores = number_of_cpu_cores) 
-random_num_list_4 <- mclapply(4:6 , FUN=my_sample_3_numbers ,  mc.cores = number_of_cpu_cores) 
+random_num_list_3 <- mclapply(1:3 , FUN=my_sample_1_number ,  mc.cores = number_of_cpu_cores) 
+random_num_list_4 <- mclapply(4:6 , FUN=my_sample_1_number ,  mc.cores = number_of_cpu_cores) 
 
-print ( "List 3: ")
-print( random_num_list_3 )
-
-
-print ( "List 4: ")
-print( random_num_list_4)
+random_num_list_3 <- paste(unlist ( random_num_list_3 ), collapse=", ")
+random_num_list_4 <- paste(unlist ( random_num_list_4 ), collapse=", ")
 
 
-print ( "Is list 3 reproducing the results of list 1?")
-is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 ) 
+print ( "Can we reproduce the results of run 1 and 2 again if we provide the same random number seeds?")	
+print ( paste( "List 3: ", random_num_list_3) )
 
-print ( "Is list 4 reproducing the results of list 2?")
-is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 ) 
+
+print ( paste( "List 4: ", random_num_list_4) ) 
+
+# 
+# print ( "Is list 3 reproducing the results of list 1?")
+# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 ) 
+# 
+# print ( "Is list 4 reproducing the results of list 2?")
+# is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 ) 
 
 ```
 

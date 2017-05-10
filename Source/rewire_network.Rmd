@@ -13,16 +13,14 @@ library(tibble)
 library(dplyr)
 library(ggplot2)
 
- base_directory <- "/home/ignatius/PostDoc/2016/Triplet_Motifs/"
-# base_directory <- "/home/ignatius/Documents/Postdoc/2016/Triplet_Motifs/"
+ base_directory <- "/home/ignatius/Documents/Postdoc/2017/Network_SURF"
+# base_directory <- "/home/ignatius/PostDoc/2017/Network_SURF"
 
-data_directory <- file.path( base_directory, "Data/Triplet_Motifs_R_data") 
+data_directory <- file.path( base_directory, "Data/R_Data") 
 
 
 load( file.path(data_directory, "network_data_library.Rdata"))
 
-source( file.path(base_directory, "Source/Common", "count_triplet_motifs_helper.R"))
- 
 ```
 
 ## R Markdown
@@ -96,14 +94,14 @@ graph_1_table <- format_degree_distribution_as_table(graph_1, "Original Network"
   
 # Rewire the network using degree-preserving randomization  
 # Plot the degree distribution of the network afterwards
-graph_2 <- graph_object  %>%
+graph_2 <- graph_1  %>%
 			rewire(keeping_degseq(loops = FALSE, niter = number_of_edges))
    
 graph_2_table <- format_degree_distribution_as_table(graph_2, "Rewired, keeping degree distribution")
 
 # Rewire the network without keeping the degree distribution the same
 # Plot the degree distribution of the network afterwards
-graph_3 <- graph_object  %>%
+graph_3 <- graph_1  %>%
 			rewire(each_edge(prob=0.4, loops = FALSE, multiple=FALSE))
    
 graph_3_table <- format_degree_distribution_as_table(graph_3, "Random rewiring")

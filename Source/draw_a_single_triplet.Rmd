@@ -170,6 +170,96 @@ layoutNetwork(cw, layout.name = "force-directed")
     
 ```
 
+
+
+### animation, change the position of the nodes
+```{r}
+
+    cwe <- cw
+    #cwe <- CytoscapeWindow ('vignette.setNodePosition',
+    #                        graph=RCy3::makeSimpleGraph (), overwrite=TRUE)
+    #displayGraph (cwe)
+    #layoutNetwork (cwe, 'grid')
+
+    center.x <- 100
+    center.y <- 100
+    radius <- 100
+    # sweep through full revoltion 3 times, 5 degrees at a time
+    angles <- seq (0, 360, 10)
+    for (angle in angles) {
+        angle.in.radians <- angle * pi / 180
+        x <- center.x + (radius * cos (angle.in.radians))
+        y <- center.y + (radius * sin (angle.in.radians))
+        setNodePosition (cwe, 'A', x, y)
+        system ('sleep 0.3')
+
+    }
+    # RCy3 will not create windows with duplicate names, so clear the decks for a subsequent possible run
+```
+
+
+### code chunk number 16: moviePrep (eval = FALSE)
+```{r}
+    cwm <- cw
+
+    # g <- RCy3::makeSimpleGraph ()
+    # g <- initNodeAttribute (g, 'pval', 'numeric', 1.0)
+    # 
+    # cwm <- CytoscapeWindow ('movie', graph=g, overwrite=TRUE)
+    # displayGraph (cwm)
+    # layoutNetwork (cwm, 'grid')
+```
+
+
+### movieRules: Rules for changing the color and node size
+```{r}
+
+    lfc.control.points <- c (-3.0, 0.0, 3.0)
+    lfc.colors <- c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000')
+    setNodeColorRule (cwm, 'log_fold_change', lfc.control.points, lfc.colors,
+                      mode='interpolate')
+
+    pval.control.points <- c (0.1, 0.05, 0.01, 0.0001)
+    pval.sizes          <- c (30, 50, 70, 100)
+    setNodeSizeRule (cwm, 'pval', pval.control.points, pval.sizes,
+                     mode='interpolate')
+```
+
+### animate, change color and node size
+```{r}
+
+    pval.timepoint.1 <- c (0.01, 0.3, 0.05)
+    pval.timepoint.2 <- c (0.05, 0.01, 0.01)
+    pval.timepoint.3 <- c (0.0001, 0.005, 0.1)
+
+    lfc.timepoint.1 <- c (-1.0, 1.0, 0.0)
+    lfc.timepoint.2 <- c (2.0, 3.0, -2.0)
+    lfc.timepoint.3 <- c (2.5, 2.0, 0.0)
+
+    for (run in 1:10 ) { 
+    for (i in 1:5) {  # run this loop 5 times
+        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
+                                 lfc.timepoint.1)
+        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
+                                 pval.timepoint.1)
+        system ('sleep 0.3')
+
+        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
+                                 lfc.timepoint.2)
+        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
+                                 pval.timepoint.2)
+        system ('sleep 0.3')
+
+        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
+                                 lfc.timepoint.3)
+        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
+                                 pval.timepoint.3)
+        system ('sleep 0.3')
+    }
+    }
+
+```
+
 ## Delete an edge
 ```{r}
 selectEdges (cw, "A (negative genetic interaction) B")
@@ -188,4 +278,15 @@ getSelectedNodes(cw)
 selectFirstNeighborsOfSelectedNodes(cw)
 
 deleteSelectedNodes (cw)
+```
+
+### code chunk number 19: deleteWindows (eval = FALSE)
+```{r}
+    cy <- CytoscapeConnection ()
+    window.names <- c ('One Triplet')
+    for (window.name in window.names){
+        if (window.name %in% as.character (getWindowList (cy))){
+            deleteWindow (cy, window.name)
+        }
+    }
 ```

@@ -1,9 +1,8 @@
 ---
 title: "igraph example"
 author: Ignatius Pang
-output: 
-	html_document: 
-		toc: TRUE
+output: html_document
+
 ---
 
 Install and Load Igraph
@@ -13,7 +12,6 @@ Install and Load Igraph
 
 # load the igraph library
 library(igraph)
-library(RCy3)
 ```
 
 Configure directories 
@@ -157,6 +155,7 @@ plot(g)
 
 Some network statistics 
 ```{r}
+library(igraph)
 # Calculate the degree and betweenness scores of nodes in the network
 
 # Number of friends for each person
@@ -232,11 +231,10 @@ my_as_graphnel <- function (graph)
     v.n <- v.n[v.n != "name"]
     for (n in v.n) {
 
-    	 graph::nodeDataDefaults(res, attr = n) <- NA
-		attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'char'
+    	# graph::nodeDataDefaults(res, attr = n) <- NA
+		#attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'char'
 
         test_node_data_type <- vertex_attr(graph, n)[1]
-        
         	        
 			        if ( is.numeric(test_node_data_type)) {
 			        	graph::nodeDataDefaults(res, attr = n) <- 0
@@ -246,7 +244,7 @@ my_as_graphnel <- function (graph)
 			        	graph::nodeDataDefaults(res, attr = n) <- 0 
 			        	attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'integer'
 
-			        } else if ( is.character(test_node_data_type)) {
+			        } else { # if ( is.character(test_node_data_type)) {
 			        	graph::nodeDataDefaults(res, attr = n) <- ''
 			        	attr(graph::nodeDataDefaults(res, attr = n), 'class') <- 'char'
 					}
@@ -267,8 +265,8 @@ my_as_graphnel <- function (graph)
         
         for (n in e.n) {
 
-        	   graph::edgeDataDefaults(res, attr = n) <- NA
-        		attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'char'
+        	  # graph::edgeDataDefaults(res, attr = n) <- NA
+        	#	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'char'
 
         	   test_edge_data_type <- edge_attr(graph, n)[1]
 
@@ -282,7 +280,7 @@ my_as_graphnel <- function (graph)
 				        	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'integer'
  					        
 
-				        } else if ( is.character(test_edge_data_type)) {
+				        } else { # if ( is.character(test_edge_data_type)) {
 				        	graph::edgeDataDefaults(res, attr = n) <- ''
 				        	attr(graph::edgeDataDefaults(res, attr = n), 'class') <- 'char'
 				        	
@@ -303,6 +301,7 @@ my_as_graphnel <- function (graph)
 ```
 
 ```{r}
+library(RCy3)
 
 GNEL2 <-my_as_graphnel(g)
 
