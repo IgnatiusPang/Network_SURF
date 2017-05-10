@@ -80,33 +80,36 @@ layoutNetwork(cw, layout.name = "force-directed")
 # Modifying Node Display Style
 ```{r}
 
-
 # Set defaults
-    setDefaultNodeShape (cw, 'ELLIPSE')
-    setDefaultNodeColor (cw, '#AAFF88')
-    setDefaultNodeSize  (cw, 80)
-    setDefaultNodeFontSize (cw, 40)
+setDefaultNodeShape (cw, 'ELLIPSE')
+setDefaultNodeColor (cw, '#AAFF88')
+setDefaultNodeSize  (cw, 80)
+setDefaultNodeFontSize (cw, 40)
 
 # Change shape of node
-    getNodeShapes (cw)   # diamond, ellipse, trapezoid, triangle, etc.
-    print (noa.names (getGraph (cw)))  # what data attributes are defined?
-    print (noa (getGraph (cw), 'moleculeType')) # Print the node attributes for each node
-    attribute.values <- c ('kinase',  'TF',       'protein')
-    node.shapes      <- c ('DIAMOND', 'TRIANGLE', 'CIRCLE')
-    setNodeShapeRule (cw, node.attribute.name='moleculeType',
-                      attribute.values, node.shapes)
+getNodeShapes(cw)   # diamond, ellipse, trapezoid, triangle, etc.
+print (noa.names (getGraph (cw)))  # what data attributes are defined?
+print (noa (getGraph (cw), 'moleculeType')) # Print the node attributes for each node
+attribute.values <- c ('kinase',  'TF',       'protein')
+node.shapes      <- c ('DIAMOND', 'TRIANGLE', 'ELLIPSE')
+setNodeShapeRule (cw, node.attribute.name = 'moleculeType',
+				  attribute.values, node.shapes)
 
-    
+
 # Change the colour of the node according to the log fold-change in transcript abundances
-    setNodeColorRule (cw, 'log_fold_change', c (-3.0, 0.0, 3.0),
-                      c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000'),
-                      mode='interpolate')
-    
-# You can also change the size of the node based on the log fold-change value    
-    # control.points = c (-1.2, 2.0, 4.0)
-    # node.sizes     = c (10, 20, 50, 200, 205)
-    # setNodeSizeRule (cw, 'log_fold_change', control.points, node.sizes,
-    #                  mode='interpolate')
+setNodeColorRule (
+	cw,
+	'log_fold_change',
+	c (-3.0, 0.0, 3.0),
+	c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000'),
+	mode = 'interpolate'
+)
+
+# You can also change the size of the node based on the log fold-change value
+# control.points = c (-1.2, 2.0, 4.0)
+# node.sizes     = c (10, 20, 50, 200, 205)
+# setNodeSizeRule (cw, 'log_fold_change', control.points, node.sizes,
+#                  mode='interpolate')
 
 ```
 
@@ -115,59 +118,74 @@ layoutNetwork(cw, layout.name = "force-directed")
 ```{r}
 
 
-    g <- cw@graph
-    g <- initEdgeAttribute (graph=g,  attribute.name='edgeType',
-                            attribute.type='char',
-                            default.value='unspecified')
-    
-    # Add edges
-    g <- graph::addEdge ('A', 'B', g)
-    g <- graph::addEdge ('B', 'C', g)
-    g <- graph::addEdge ('A', 'C', g)
 
-    # Assign edge attributes
-    edgeData (g, 'A', 'B', 'edgeType') <- 'negative genetic interaction'
-    edgeData (g, 'B', 'C', 'edgeType') <- 'activates transcription of target gene'
-    edgeData (g, 'A', 'C', 'edgeType') <- 'activates via phosphorylation'
-    
-    
-    cw@graph <- g
-    displayGraph (cw)
+g <- cw@graph
+g <- initEdgeAttribute (
+	graph = g,
+	attribute.name = 'edgeType',
+	attribute.type = 'char',
+	default.value = 'unspecified'
+)
+
+# Add edges
+g <- graph::addEdge ('A', 'B', g)
+g <- graph::addEdge ('B', 'C', g)
+g <- graph::addEdge ('A', 'C', g)
+
+# Assign edge attributes
+edgeData (g, 'A', 'B', 'edgeType') <-
+	'negative genetic interaction'
+edgeData (g, 'B', 'C', 'edgeType') <-
+	'activates transcription of target gene'
+edgeData (g, 'A', 'C', 'edgeType') <-
+	'activates via phosphorylation'
+
+
+cw@graph <- g
+displayGraph (cw)
 ```
 
 ## Set the Style of the lines
 ```{r}
-    # 
-    getLineStyles(cw)
-    
-    line.styles <- c ( 'SOLID', 'DOT',  'PARALLEL_LINES')
-    edgeType.values <- c ('activates via phosphorylation', 'activates transcription of target gene',
-                         'negative genetic interaction')
-    
-    setEdgeLineStyleRule (cw, 'edgeType', edgeType.values,
-                          line.styles)
+#
+getLineStyles(cw)
 
-    getArrowShapes(cw)
-    
-    ## Source Arrow Styles
-    source.arrow.styles <- c ('None', 'None', 'None') # c ('NONE', 'NONE', 'NONE')
+line.styles <- c ('SOLID', 'DOT',  'PARALLEL_LINES')
+edgeType.values <- c (
+	'activates via phosphorylation',
+	'activates transcription of target gene',
+	'negative genetic interaction'
+)
 
-    setEdgeSourceArrowRule (cw, 'edgeType', 
-    						attribute.values=edgeType.values,
-                            arrows=source.arrow.styles, 
-    						default="NONE")
-    
-    ## Target Arrow Styles
-    target.arrow.styles <- c ('ARROW', 'DELTA', 'NONE')
-    setEdgeTargetArrowRule (cw, 'edgeType', 
-    						edgeType.values,
-                            target.arrow.styles, 
-    						default="NONE")
+setEdgeLineStyleRule (cw, edge.attribute.name='edgeType',
+					  edgeType.values,
+					  line.styles)
 
-    cw@graph <- g
-    displayGraph (cw)
-   
-    layoutNetwork(cw, layout.name = "force-directed")
+getArrowShapes(cw)
+
+## Source Arrow Styles
+source.arrow.styles <-
+	c ('None', 'None', 'None') # c ('NONE', 'NONE', 'NONE')
+
+setEdgeSourceArrowRule (
+	cw,
+	'edgeType',
+	attribute.values = edgeType.values,
+	arrows = source.arrow.styles,
+	default = "NONE"
+)
+
+## Target Arrow Styles
+target.arrow.styles <- c ('ARROW', 'DELTA', 'NONE')
+setEdgeTargetArrowRule (cw, 'edgeType',
+						edgeType.values,
+						target.arrow.styles,
+						default = "NONE")
+
+cw@graph <- g
+displayGraph (cw)
+
+layoutNetwork(cw, layout.name = "force-directed")
     
 ```
 
@@ -176,27 +194,31 @@ layoutNetwork(cw, layout.name = "force-directed")
 ### animation, change the position of the nodes
 ```{r}
 
-    cwe <- cw
 
-    ## You can build a simple graph but I've commented it out heres
-    #cwe <- CytoscapeWindow ('vignette.setNodePosition',
-    #                        graph=RCy3::makeSimpleGraph (), overwrite=TRUE)
-    #displayGraph (cwe)
-    #layoutNetwork (cwe, 'grid')
+cwe <- cw
 
-    center.x <- 100
-    center.y <- 100
-    radius <- 100
-    # sweep through full revoltion 3 times, 5 degrees at a time
-    angles <- seq (0, 360, 10)
-    for (angle in angles) {
-        angle.in.radians <- angle * pi / 180
-        x <- center.x + (radius * cos (angle.in.radians))
-        y <- center.y + (radius * sin (angle.in.radians))
-        setNodePosition (cwe, 'A', x, y)
-        system ('sleep 0.3')
+## You can build a simple graph but I've commented it out heres
+#cwe <- CytoscapeWindow ('vignette.setNodePosition',
+#                        graph=RCy3::makeSimpleGraph (), overwrite=TRUE)
+#displayGraph (cwe)
+#layoutNetwork (cwe, 'grid')
 
-    }
+# Set the center and radius of the circle
+# for which the node will move around
+center.x <- 100
+center.y <- 100
+radius <- 100
+
+# sweep through full revoltion 3 times, 10 degrees at a time
+angles <- seq (0, 360, 10)
+for (angle in angles) {
+	angle.in.radians <- angle * pi / 180
+	x <- center.x + (radius * cos (angle.in.radians))
+	y <- center.y + (radius * sin (angle.in.radians))
+	setNodePosition (cwe, 'A', x, y)
+	system ('sleep 0.3')
+	
+}
     # RCy3 will not create windows with duplicate names, so clear the decks for a subsequent possible run
 ```
 
@@ -218,11 +240,13 @@ layoutNetwork(cw, layout.name = "force-directed")
 ```{r}
     cwm <- cw
 
+	# Log fold-change represented by colour
     lfc.control.points <- c (-3.0, 0.0, 3.0)
     lfc.colors <- c ('#00AA00', '#00FF00', '#FFFFFF', '#FF0000', '#AA0000')
     setNodeColorRule (cwm, 'log_fold_change', lfc.control.points, lfc.colors,
                       mode='interpolate')
 
+    # P-value represented by node size
     pval.control.points <- c (0.1, 0.05, 0.01, 0.0001)
     pval.sizes          <- c (30, 50, 70, 100)
     setNodeSizeRule (cwm, 'pval', pval.control.points, pval.sizes,
@@ -231,36 +255,56 @@ layoutNetwork(cw, layout.name = "force-directed")
 
 ### animate, change color and node size
 ```{r}
+# P-value for Nodes A, B, C for each time point 
+pval.timepoint.1 <- c (0.01, 0.3, 0.05)
+pval.timepoint.2 <- c (0.05, 0.01, 0.01)
+pval.timepoint.3 <- c (0.0001, 0.005, 0.1)
 
-    pval.timepoint.1 <- c (0.01, 0.3, 0.05)
-    pval.timepoint.2 <- c (0.05, 0.01, 0.01)
-    pval.timepoint.3 <- c (0.0001, 0.005, 0.1)
 
-    lfc.timepoint.1 <- c (-1.0, 1.0, 0.0)
-    lfc.timepoint.2 <- c (2.0, 3.0, -2.0)
-    lfc.timepoint.3 <- c (2.5, 2.0, 0.0)
+# Log-fold-change for Nodes A, B, C for each time point 
+lfc.timepoint.1 <- c (-1.0, 1.0, 0.0)
+lfc.timepoint.2 <- c (2.0, 3.0,-2.0)
+lfc.timepoint.3 <- c (2.5, 2.0, 0.0)
 
-    for (run in 1:10 ) { 
-    for (i in 1:5) {  # run this loop 5 times
-        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
-                                 lfc.timepoint.1)
-        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
-                                 pval.timepoint.1)
-        system ('sleep 0.3')
+# run this loop 50 times
+for (i in 1:50) { 
+		setNodeAttributesDirect (cwm,
+								 'log_fold_change',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 lfc.timepoint.1)
+		setNodeAttributesDirect (cwm,
+								 'pval',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 pval.timepoint.1)
+		system ('sleep 0.3')
+		
+		setNodeAttributesDirect (cwm,
+								 'log_fold_change',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 lfc.timepoint.2)
+		setNodeAttributesDirect (cwm,
+								 'pval',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 pval.timepoint.2)
+		system ('sleep 0.3')
+		
+		setNodeAttributesDirect (cwm,
+								 'log_fold_change',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 lfc.timepoint.3)
+		setNodeAttributesDirect (cwm,
+								 'pval',
+								 'numeric',
+								 c ('A', 'B', 'C'),
+								 pval.timepoint.3)
+		system ('sleep 0.3')
+}		
 
-        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
-                                 lfc.timepoint.2)
-        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
-                                 pval.timepoint.2)
-        system ('sleep 0.3')
-
-        setNodeAttributesDirect (cwm, 'log_fold_change',  'numeric', c ('A', 'B', 'C'),
-                                 lfc.timepoint.3)
-        setNodeAttributesDirect (cwm, 'pval', 'numeric', c ('A', 'B', 'C'),
-                                 pval.timepoint.3)
-        system ('sleep 0.3')
-    }
-    }
 
 ```
 

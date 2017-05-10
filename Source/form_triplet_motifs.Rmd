@@ -26,8 +26,11 @@ load( file.path(data_directory, "network_data_library.Rdata"))
 ```{r}
 
 filtered_costanzo_stringent <- filtered_costanzo_stringent_2016 %>% 
-								dplyr::select( one_of( c( "query_oln_id_edited", "array_oln_id_edited", "genetic_interaction_score"))) %>%
-								dplyr::rename( node_a = query_oln_id_edited, node_b= array_oln_id_edited )
+								dplyr::select( one_of( c( "query_oln_id_edited",
+														  "array_oln_id_edited",
+											  "genetic_interaction_score"))) %>%
+								dplyr::rename( node_a = query_oln_id_edited,
+											   node_b= array_oln_id_edited )
 
 # Clean the table up, such that the node A ID string is always greater than the node B ID string
 # This removes the symmetry in the triplet motif dataset 
@@ -84,23 +87,28 @@ interactions_combined_2 <- interactions_combined %>%
 ## Join the networks together to find triplets where at least one edge is a negative genetic interaction 
 
 
-				  # Join the genetic interaction to the other biological networks
-triplet_motifs <- dplyr::inner_join( filtered_costanzo_stringent, interactions_combined_1, by="node_a" )  %>%
-						# Closing the triplets with a third edge from the other biological networks 	
-					    dplyr::inner_join( interactions_combined_2, by=c("node_b"= "node_b", "node_c"= "node_c") ) %>%
-						# Select the corresponding columns
-					    dplyr::select ( one_of( c("node_a", "node_b", "node_c", "type_ac", "type_bc", 
-					    						  "type_ac_long", "type_bc_long", "genetic_interaction_score"))) %>%
+# Join the genetic interaction to the other biological networks
+triplet_motifs <- dplyr::inner_join( filtered_costanzo_stringent,
+									 interactions_combined_1, by="node_a" )  %>%
 	
-						# Remove special cases where Node A == Node C or Node B == Node C
-						dplyr::filter ( node_a != node_c) %>%
-						dplyr::filter ( node_b != node_c) %>%
+	# Closing the triplets with a third edge from the other biological networks 
+	dplyr::inner_join( interactions_combined_2, by=c("node_b"= "node_b", 
+													 "node_c"= "node_c") ) %>%
+	# Select the corresponding columns
+	dplyr::select ( one_of( c("node_a", "node_b", "node_c", 
+							  "type_ac", "type_bc", 
+							  "type_ac_long", "type_bc_long",
+							  "genetic_interaction_score"))) %>%
 	
-						# Remove duplicates
-					    dplyr::distinct() %>%
+    # Remove special cases where Node A == Node C or Node B == Node C
+    dplyr::filter ( node_a != node_c) %>%
+	dplyr::filter ( node_b != node_c) %>%
 	
-						# Arrange the columns in the order that I want 
-					    dplyr::arrange( node_a, node_b, node_c, type_bc, type_ac)
+	# Remove duplicates
+	dplyr::distinct() %>%
+	
+	# Arrange the columns in the order that I want 
+	dplyr::arrange( node_a, node_b, node_c, type_bc, type_ac)
 					 
 triplet_motifs
 
@@ -139,10 +147,13 @@ dim( triplet_motif_counts)
 
 triplet_motif_counts <- as.data.frame(triplet_motif_counts)
 
-triplet_motif_counts  <- mutate( triplet_motif_counts, motif_type = paste(type_ac, type_bc, sep="") )  %>%
+triplet_motif_counts <- mutate( triplet_motif_counts, 
+						motif_type = paste(type_ac, type_bc, sep="") )  %>%
 						arrange ( desc(total_count))
 
-triplet_motif_counts[, "motif_type"] <- factor ( as.vector(triplet_motif_counts[,"motif_type"]), levels=as.vector(triplet_motif_counts[,"motif_type"]))
+triplet_motif_counts[, "motif_type"] <- factor (
+	as.vector(triplet_motif_counts[,"motif_type"]),
+	levels=as.vector(triplet_motif_counts[,"motif_type"]))
 
 library(ggplot2)
 

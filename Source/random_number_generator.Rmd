@@ -35,7 +35,12 @@ sample_1_number <- function( random_seed , set_random_nubmer_seed =TRUE) {
 
 random_number_seed <-10052017
 number_of_cpu_cores <- 3
-reset_each_time <- TRUE  # set to TRUE to ensure the random number seed is set each time you run
+
+# set reset_each_time to TRUE to ensure the random number seed is set each time you run, 
+# this will make the results replicable each time (e.g. random_num_list_1 == random_num_list_3, random_num_list_2 == random_num_list_4 )
+# If FALSE, the results will not be replicable ( e.g. random_num_list_1 != random_num_list_3, random_num_list_2 != random_num_list_4 ))
+reset_each_time <- TRUE  
+
 
 set.seed(random_number_seed )
 
@@ -66,7 +71,7 @@ print ( paste( "List 4: ", random_num_list_4) )
 
 
 
-## Functions to check if two lists of vectors are exactly the same (deprecated)
+## Functions to check if two lists of vectors are exactly the same 
 ```{r}
 ## Check if two vectors of numbers are the same
 is_two_vectors_the_same <- function (  vector_1, vector_2 ) {
@@ -99,16 +104,16 @@ is_two_lists_of_vectors_the_same <- function ( list_1, list_2) {
 	
 }
 
-# # Compare if the two lists of random numbers vectors are the same
-# print ( "Is list 1 reproducing the results of list 2?")
-# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)
+# Compare if the two lists of random numbers vectors are the same
+print ( "Is list 1 reproducing the results of list 2?")
+is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)
 
-# 
-# print ( "Is list 3 reproducing the results of list 1?")
-# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 ) 
-# 
-# print ( "Is list 4 reproducing the results of list 2?")
-# is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 ) 
+
+print ( "Is list 3 reproducing the results of list 1?")
+is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 )
+
+print ( "Is list 4 reproducing the results of list 2?")
+is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 )
 
 ```
 

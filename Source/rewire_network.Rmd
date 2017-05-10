@@ -29,18 +29,21 @@ load( file.path(data_directory, "network_data_library.Rdata"))
 ## R Markdown
 
 
+## Draw a ring with 10 nodes, count the number of edges and plot it
 ```{r}
-
-
 # Make a ring with 10 vertices 
 g <- make_ring(10, circular = TRUE)
 
-# Plot the ring 
-plot(g)
-
 # Count the number of edges in the graph
 number_of_edges <- ecount( g)
- 
+
+# Plot the ring 
+plot(g)
+```
+
+## Shuffle the same graph, but keeping the number of interaction partners of each node the same 
+## (e.g. keeping the degree distribution the same)
+```{r}
 # Rewire the graphs by swapping edges 10 times, keeping the degree distribution the same
  graph_1 <- g %>%
 			rewire(keeping_degseq(loops = FALSE, niter = number_of_edges))
@@ -50,13 +53,15 @@ number_of_edges <- ecount( g)
  				
 # Plot the graph
  plot(graph_1)
+``` 
  
-# What happens if I don't keep the edgree distribution the same 
+## What happens if I don't keep the edgree distribution the same 
+```{r} 
  graph_2 <- g %>%
-					 rewire( each_edge(prob=1, loops = FALSE, multiple=FALSE))
+			rewire( each_edge(prob=1, loops = FALSE, multiple=FALSE))
  				
- 				# loops : Whether to allow destroying and creating loop edges.
- 				# multiple : Logical scalar, whether multiple edges are allowed int the generated graph
+ 			# loops : Whether to allow destroying and creating loop edges.
+ 			# multiple : Logical scalar, whether multiple edges are allowed int the generated graph
  				
  				
  plot(graph_2)
@@ -64,7 +69,7 @@ number_of_edges <- ecount( g)
 ```
 
 
-# Function to get the node degree distribution and format it into a table format
+## Function to get the node degree distribution and format it into a table format
 ```{r }
 
 format_degree_distribution_as_table <- function( igraph_object, label) {
@@ -79,14 +84,15 @@ format_degree_distribution_as_table <- function( igraph_object, label) {
 	
 	head(y_axis)
 	
-	result_table <- data.frame( label=rep(label, length(x_axis)), degrees=x_axis, frequency=y_axis  )
+	result_table <- data.frame( label=rep(label, length(x_axis)), 
+								degrees=x_axis, frequency=y_axis  )
 	
 	return(result_table)
 }
 ```
 
-```{r }
-
+## Example using a larger network (e.g. a protein-protein interaction network)
+```{r}
 ## Obtain a protein-protein interactions network 
 
 head( sbi_interactome_collated)
@@ -108,7 +114,8 @@ graph_1_table
 graph_2 <- graph_1  %>%
 			rewire(keeping_degseq(loops = FALSE, niter = number_of_edges))
    
-graph_2_table <- format_degree_distribution_as_table(graph_2, "Rewired, keeping degree distribution")
+graph_2_table <- format_degree_distribution_as_table(graph_2, 
+										"Rewired, keeping degree distribution")
 
 
 graph_2_table

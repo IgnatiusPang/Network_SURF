@@ -139,7 +139,12 @@ sample_1_number &lt;- function( random_seed , set_random_nubmer_seed =TRUE) {
 } </code></pre>
 <pre class="r"><code>random_number_seed &lt;-10052017
 number_of_cpu_cores &lt;- 3
-reset_each_time &lt;- TRUE  # set to TRUE to ensure the random number seed is set each time you run
+
+# set reset_each_time to TRUE to ensure the random number seed is set each time you run, 
+# this will make the results replicable each time (e.g. random_num_list_1 == random_num_list_3, random_num_list_2 == random_num_list_4 )
+# If FALSE, the results will not be replicable ( e.g. random_num_list_1 != random_num_list_3, random_num_list_2 != random_num_list_4 ))
+reset_each_time &lt;- TRUE  
+
 
 set.seed(random_number_seed )
 
@@ -170,8 +175,8 @@ print ( &quot;Can we reproduce the results of run 1 and 2 again if we provide th
 <pre class="r"><code>print ( paste( &quot;List 4: &quot;, random_num_list_4) ) </code></pre>
 <pre><code>## [1] &quot;List 4:  28, 7, 72, 26, 61, 69, 16, 83, 12, 88&quot;</code></pre>
 </div>
-<div id="functions-to-check-if-two-lists-of-vectors-are-exactly-the-same-deprecated" class="section level2">
-<h2>Functions to check if two lists of vectors are exactly the same (deprecated)</h2>
+<div id="functions-to-check-if-two-lists-of-vectors-are-exactly-the-same" class="section level2">
+<h2>Functions to check if two lists of vectors are exactly the same</h2>
 <pre class="r"><code>## Check if two vectors of numbers are the same
 is_two_vectors_the_same &lt;- function (  vector_1, vector_2 ) {
     
@@ -203,16 +208,19 @@ is_two_lists_of_vectors_the_same &lt;- function ( list_1, list_2) {
     
 }
 
-# # Compare if the two lists of random numbers vectors are the same
-# print ( &quot;Is list 1 reproducing the results of list 2?&quot;)
-# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)
-
-# 
-# print ( &quot;Is list 3 reproducing the results of list 1?&quot;)
-# is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 ) 
-# 
-# print ( &quot;Is list 4 reproducing the results of list 2?&quot;)
-# is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 ) </code></pre>
+# Compare if the two lists of random numbers vectors are the same
+print ( &quot;Is list 1 reproducing the results of list 2?&quot;)</code></pre>
+<pre><code>## [1] &quot;Is list 1 reproducing the results of list 2?&quot;</code></pre>
+<pre class="r"><code>is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_2)</code></pre>
+<pre><code>## [1] FALSE</code></pre>
+<pre class="r"><code>print ( &quot;Is list 3 reproducing the results of list 1?&quot;)</code></pre>
+<pre><code>## [1] &quot;Is list 3 reproducing the results of list 1?&quot;</code></pre>
+<pre class="r"><code>is_two_lists_of_vectors_the_same( random_num_list_1, random_num_list_3 )</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+<pre class="r"><code>print ( &quot;Is list 4 reproducing the results of list 2?&quot;)</code></pre>
+<pre><code>## [1] &quot;Is list 4 reproducing the results of list 2?&quot;</code></pre>
+<pre class="r"><code>is_two_lists_of_vectors_the_same( random_num_list_2, random_num_list_4 )</code></pre>
+<pre><code>## [1] TRUE</code></pre>
 </div>
 
 
